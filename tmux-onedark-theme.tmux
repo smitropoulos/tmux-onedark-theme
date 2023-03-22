@@ -69,6 +69,12 @@ while read -r line; do
 	*color0*)
 		setColorFromHex "$line" black
 		;;
+	*foreground*)
+		setColorFromHex "$line" foreground
+		;;
+	*background*)
+		setColorFromHex "$line" background
+		;;
 	esac
 done <$Xresources
 
@@ -80,6 +86,9 @@ onedark_white=${tmux_white:-"#a7aab0"}
 onedark_green=${tmux_green:-"#8fb573"}
 onedark_visual_grey=${tmux_light_black:-"#3e4452"}
 onedark_comment_grey="#5c6370"
+
+onedark_foreground=${tmux_foreground:-$onedark_white}
+onedark_background=${tmux_background:-$onedark_black}
 
 get() {
 	local option=$1
@@ -112,50 +121,25 @@ set "status-left-length" "100"
 set "status-right-length" "100"
 set "status-right-attr" "none"
 
-set "message-fg" "$onedark_white"
-set "message-bg" "$onedark_black"
+set "message-style" fg="$onedark_foreground"
+set "message-style" bg="$onedark_background"
 
-set "message-command-fg" "$onedark_white"
-set "message-command-bg" "$onedark_black"
+set "status-bg" "$onedark_background"
+set "status-fg" "$onedark_foreground"
 
-set "status-attr" "none"
-set "status-left-attr" "none"
+set visual-activity off
 
-setw "window-status-fg" "$onedark_black"
-setw "window-status-bg" "$onedark_black"
-setw "window-status-attr" "none"
-
-setw "window-status-activity-bg" "$onedark_black"
-setw "window-status-activity-fg" "$onedark_black"
-setw "window-status-activity-attr" "none"
-
-setw "window-status-separator" ""
-
-set "window-style" "fg=$onedark_comment_grey"
-set "window-active-style" "fg=$onedark_white"
-
-set "pane-border-fg" "$onedark_white"
-set "pane-border-bg" "$onedark_black"
-set "pane-active-border-fg" "$onedark_green"
-set "pane-active-border-bg" "$onedark_black"
-
-set "display-panes-active-colour" "$onedark_yellow"
-set "display-panes-colour" "$onedark_blue"
-
-set "status-bg" "$onedark_black"
-set "status-fg" "$onedark_white"
-
-set "@prefix_highlight_fg" "$onedark_black"
+set "@prefix_highlight_fg" "$onedark_background"
 set "@prefix_highlight_bg" "$onedark_green"
-set "@prefix_highlight_copy_mode_attr" "fg=$onedark_black,bg=$onedark_green"
+set "@prefix_highlight_copy_mode_attr" "fg=$onedark_background,bg=$onedark_green"
 set "@prefix_highlight_output_prefix" "  "
 
 status_widgets=$(get "@onedark_widgets")
 time_format=$(get "@onedark_time_format" "%R")
 date_format=$(get "@onedark_date_format" "%d/%m/%Y")
 
-set "status-right" "#[fg=$onedark_white,bg=$onedark_black,nounderscore,noitalics]${time_format}  ${date_format} #[fg=$onedark_visual_grey,bg=$onedark_black]#[fg=$onedark_visual_grey,bg=$onedark_visual_grey]#[fg=$onedark_white, bg=$onedark_visual_grey]${status_widgets} #[fg=$onedark_green,bg=$onedark_visual_grey,nobold,nounderscore,noitalics]#[fg=$onedark_black,bg=$onedark_green,bold] #h #[fg=$onedark_yellow, bg=$onedark_green]#[fg=$onedark_red,bg=$onedark_yellow]"
-set "status-left" "#[fg=$onedark_black,bg=$onedark_green,bold] #S #{prefix_highlight}#[fg=$onedark_green,bg=$onedark_black,nobold,nounderscore,noitalics]"
+set "status-right" "#[fg=$onedark_foreground,bg=$onedark_background,nounderscore,noitalics]${time_format}  ${date_format}  ${status_widgets}#[fg=$onedark_visual_grey,bg=$onedark_background]#[fg=$onedark_visual_grey,bg=$onedark_visual_grey]#[fg=$onedark_white, bg=$onedark_visual_grey] #[fg=$onedark_green,bg=$onedark_visual_grey,nobold,nounderscore,noitalics]#[fg=$onedark_background,bg=$onedark_green,bold] #h #[fg=$onedark_yellow, bg=$onedark_green]#[fg=$onedark_red,bg=$onedark_yellow]"
+set "status-left" "#[fg=$onedark_background,bg=$onedark_green,bold] #S #{prefix_highlight}#[fg=$onedark_green,bg=$onedark_background,nobold,nounderscore,noitalics]"
 
-set "window-status-format" "#[fg=$onedark_black,bg=$onedark_black,nobold,nounderscore,noitalics]#[fg=$onedark_white,bg=$onedark_black] #I  #W #[fg=$onedark_black,bg=$onedark_black,nobold,nounderscore,noitalics]"
-set "window-status-current-format" "#[fg=$onedark_black,bg=$onedark_visual_grey,nobold,nounderscore,noitalics]#[fg=$onedark_white,bg=$onedark_visual_grey,nobold] #I  #W #[fg=$onedark_visual_grey,bg=$onedark_black,nobold,nounderscore,noitalics]"
+set "window-status-format" "#[fg=$onedark_background,bg=$onedark_visual_grey,nobold,nounderscore,noitalics]#[fg=$onedark_background,bg=$onedark_visual_grey] #I  #W #[fg=$onedark_visual_grey,bg=$onedark_background,nobold,nounderscore,noitalics]"
+set "window-status-current-format" "#[fg=$onedark_background,bg=$onedark_green,nobold,nounderscore,noitalics]#[fg=$onedark_background,bg=$onedark_green] #I  #W #[fg=$onedark_green,bg=$onedark_background,nobold,nounderscore,noitalics]"
