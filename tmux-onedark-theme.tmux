@@ -1,5 +1,7 @@
 #!/bin/bash
 
+declare -A colors_from_xresources=()
+
 getHexFromLine() {
 	trimmedLine="$(echo -e "$1" | tr -d '[:space:]')"
 	HEX=$(echo "$trimmedLine" | awk -F ':' '{print $2}')
@@ -9,86 +11,31 @@ getHexFromLine() {
 # $2 should be the tmux color to set
 setColorFromHex() {
 	getHexFromLine "$line"
-	prefix="tmux_"
-	command="$prefix$2=$HEX"
-	export "${command?}"
+	colors_from_xresources+=([$2]=$HEX)
 }
 
 Xresources=~/.Xresources.colors
 
 while read -r line; do
 	#skip empty lines
-	[ -z "$line" ] && continue
-	case $line in
-
-	*color15*)
-		setColorFromHex "$line" light_white
-		;;
-	*color14*)
-		setColorFromHex "$line" light_cyan
-		;;
-	*color13*)
-		setColorFromHex "$line" light_magenta
-		;;
-	*color12*)
-		setColorFromHex "$line" light_blue
-		;;
-	*color11*)
-		setColorFromHex "$line" light_yellow
-		;;
-	*color10*)
-		setColorFromHex "$line" light_green
-		;;
-	*color9*)
-		setColorFromHex "$line" light_red
-		;;
-	*color8*)
-		setColorFromHex "$line" light_black
-		;;
-	*color7*)
-		setColorFromHex "$line" white
-		;;
-	*color6*)
-		setColorFromHex "$line" cyan
-		;;
-	*color5*)
-		setColorFromHex "$line" magenta
-		;;
-	*color4*)
-		setColorFromHex "$line" blue
-		;;
-	*color3*)
-		setColorFromHex "$line" yellow
-		;;
-	*color2*)
-		setColorFromHex "$line" green
-		;;
-	*color1*)
-		setColorFromHex "$line" red
-		;;
-	*color0*)
-		setColorFromHex "$line" black
-		;;
-	*foreground*)
-		setColorFromHex "$line" foreground
-		;;
-	*background*)
-		setColorFromHex "$line" background
-		;;
-	esac
+  line=$(echo "$line" | tr '[:upper:]' '[:lower:]')
+  line=$(echo "$line" | tr "\!" " ")
+	hex=$(echo "$line" | awk -F' ' '{print$2}')
+	colorName=$(echo "$line" | awk -F' ' '{print$3}' | tr -d "\!")
+	colors_from_xresources+=([$colorName]=$hex)
 done <$Xresources
 
-onedark_black=${tmux_black:-"#282c34"}
-onedark_blue=${tmux_blue:-"#57a5e5"}
-onedark_yellow=${tmux_yellow:-"#dbb671"}
-onedark_red=${tmux_red:-"#de5d68"}
-onedark_white=${tmux_white:-"#a7aab0"}
-onedark_green=${tmux_green:-"#8fb573"}
-onedark_visual_grey=${tmux_light_black:-"#3e4452"}
+onedark_black=${colors_from_xresources[black]:-"#282c34"}
+onedark_blue=${colors_from_xresources[blue]:-"#57a5e5"}
+onedark_yellow=${colors_from_xresources[yellow]:-"#dbb671"}
+onedark_red=${colors_from_xresources[red]:-"#de5d68"}
+onedark_white=${colors_from_xresources[white]:-"#a7aab0"}
+onedark_green=${colors_from_xresources[light_green]:-"#8fb573"}
+onedark_visual_grey=${colors_from_xresources[light_black]:-"#3e4452"}
 onedark_comment_grey="#5c6370"
 
-onedark_foreground=${tmux_foreground:-$onedark_white}
-onedark_background=${tmux_background:-$onedark_black}
+onedark_foreground=${colors_from_xresources[foreground]:-"$onedark_black"}
+onedark_background=${colors_from_xresources[background]:-"$onedark_white"}
 
 get() {
 	local option=$1
