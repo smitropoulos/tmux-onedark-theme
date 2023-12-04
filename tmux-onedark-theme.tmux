@@ -83,7 +83,7 @@ onedark_blue=${tmux_blue:-"#57a5e5"}
 onedark_yellow=${tmux_yellow:-"#dbb671"}
 onedark_red=${tmux_red:-"#de5d68"}
 onedark_white=${tmux_white:-"#a7aab0"}
-onedark_green=${tmux_green:-"#8fb573"}
+onedark_green=${tmux_green:-"#91AC76"}
 onedark_visual_grey=${tmux_light_black:-"#3e4452"}
 onedark_comment_grey="#5c6370"
 
