@@ -1,6 +1,6 @@
 #!/bin/bash
 
-color_assignments=$(python ~/scripts/utility/colorschemes/parse_xresources.py)
+color_assignments=$(python3 ~/scripts/utility/colorschemes/parse_xresources.py)
 
 # Execute the generated Python code to set color variables
 eval "$color_assignments"
