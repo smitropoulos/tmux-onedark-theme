@@ -1,41 +1,21 @@
 #!/bin/bash
 
-declare -A colors_from_xresources=()
+color_assignments=$(python ~/scripts/utility/colorschemes/parse_xresources.py)
 
-getHexFromLine() {
-	trimmedLine="$(echo -e "$1" | tr -d '[:space:]')"
-	HEX=$(echo "$trimmedLine" | awk -F ':' '{print $2}')
-}
+# Execute the generated Python code to set color variables
+eval "$color_assignments"
 
-# $1 should be the xresources line
-# $2 should be the tmux color to set
-setColorFromHex() {
-	getHexFromLine "$line"
-	colors_from_xresources+=([$2]=$HEX)
-}
+onedark_black=${tmux_black:-"#282c34"}
+# onedark_blue=${tmux_blue:-"#57a5e5"}
+onedark_yellow=${tmux_yellow:-"#dbb671"}
+onedark_red=${tmux_red:-"#de5d68"}
+onedark_white=${tmux_white:-"##de5d68"}
+onedark_green=${tmux_light_green:-"#000000"}
+onedark_visual_grey=${tmux_light_black:-"#3e4452"}
+# onedark_comment_grey="#5c6370"
 
-Xresources=~/.Xresources.colors
-cat $Xresources | while IFS= read -r line; do
-	echo "$line" >>~/out
-	#skip empty lines
-	line=$(echo "$line" | tr '[:upper:]' '[:lower:]')
-	line=$(echo "$line" | tr "\!" " ")
-	hex=$(echo "$line" | awk -F' ' '{print$2}')
-	colorName=$(echo "$line" | awk -F' ' '{print$3}' | tr -d "\!")
-	colors_from_xresources+=([$colorName]=$hex)
-done
-
-onedark_black=${colors_from_xresources[black]:-"#282c34"}
-onedark_blue=${colors_from_xresources[blue]:-"#57a5e5"}
-onedark_yellow=${colors_from_xresources[yellow]:-"#dbb671"}
-onedark_red=${colors_from_xresources[red]:-"#de5d68"}
-onedark_white=${colors_from_xresources[white]:-"#a7aab0"}
-onedark_green=${colors_from_xresources[light_green]:-"#8fb573"}
-onedark_visual_grey=${colors_from_xresources[light_black]:-"#3e4452"}
-onedark_comment_grey="#5c6370"
-
-onedark_foreground=${colors_from_xresources[foreground]:-"$onedark_white"}
-onedark_background=${colors_from_xresources[background]:-"$onedark_black"}
+onedark_foreground=${tmux_foreground:-"$onedark_white"}
+onedark_background=${tmux_background:-"$onedark_black"}
 
 get() {
 	local option=$1
@@ -89,4 +69,3 @@ set "status-left" "#[fg=$onedark_background,bg=$onedark_green,bold] #S #{prefix_
 
 set "window-status-format" "#[fg=$onedark_background,bg=$onedark_visual_grey,nobold,nounderscore,noitalics]#[fg=$onedark_background,bg=$onedark_visual_grey] #I  #W #[fg=$onedark_visual_grey,bg=$onedark_background,nobold,nounderscore,noitalics]"
 set "window-status-current-format" "#[fg=$onedark_background,bg=$onedark_green,nobold,nounderscore,noitalics]#[fg=$onedark_background,bg=$onedark_green] #I  #W #[fg=$onedark_green,bg=$onedark_background,nobold,nounderscore,noitalics]"
-
