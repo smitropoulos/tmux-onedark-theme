@@ -51,7 +51,9 @@ set "status-right-attr" "none"
 set "message-style" fg="$onedark_foreground"
 set "message-style" bg="$onedark_background"
 
-set "status-bg" "$onedark_background"
+set "status-bg" "default"
+set "status-style" "bg=default"
+set "mode-style" "fg=white,bg=cyan"
 set "status-fg" "$onedark_foreground"
 
 set "@prefix_highlight_fg" "$onedark_background"
